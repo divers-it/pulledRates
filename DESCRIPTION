@@ -18,4 +18,14 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Imports: 
-    devtools
+    ape,
+    castor,
+    deSolve,
+    devtools,
+    knitr,
+    phytools,
+    plotrix,
+    RColorBrewer,
+    rmarkdown,
+    scales,
+    shiny
