@@ -62,9 +62,11 @@ dl[[3]] <- death
 ###
 
 birth <- function(x)
-  0.3 * (2.5 + exp(-0.05 * (x - 20) ^ 4) + sin(x / 7) ^ 3)
+  0.3 * (2.5 + exp(-0.05 * (x - 20) ^ 4) + sin(x / 5) ^ 3)
+
 death <- function(x)
-  0.28 * (2.5 + exp(-0.05 * (x - 20) ^ 4) + sin(x / 7) ^ 3)
+  (0.3 * (2.5 + exp(-0.05 * (x - 20) ^ 4) + sin(x / 5) ^ 3))-0.075
+
 #death <- function(x)
 #  0.05 * (1.5 + 0.05*x + cos(x/20)^4 * cos(x/3)+ cos(x/5)^3)
 
@@ -79,7 +81,7 @@ scenario <- c(
   "recent radiation",
   "mass extinction",
   "gradual turnover increase",
-  "rapid fluctuations"
+  "rapid parallel fluctuations"
 )
 
 
@@ -188,7 +190,7 @@ for (i in 1:4) {
   }
 
   if (i == 4) {
-    text(x = -11, y = 1.45, labels = scenario[i])
+    text(x = -18, y = 1.45, labels = scenario[i])
   }
 
 }

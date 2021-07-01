@@ -315,7 +315,7 @@ A <- lapply(
 )
 ```
 
-The following function returns the three pulled rates. Arguments are the birth and death rates (functions), the sampling fraction (real number) and a time series for integration. The default value is a constant birth-death model with complete sampling.
+The following function returns the three pulled rates. Arguments are the birth and death rates (functions), the sampling fraction (real number) and a time series for integration.
 
 ```{r}
 pulled <- function(birth,death,rho,t) {
@@ -342,7 +342,7 @@ pulled <- function(birth,death,rho,t) {
 }
 ```
 
-A function to do more or less sharp but continuous shifts in rates. 
+A function to do more or less sharp but continuous shifts in rates between rates 'r0' and 'r1'. 'Tshift' is the timing of the shft and 'alpha' controls the sharpness of the shift (where increasing values are sharper).  
 
 ```{r}
 smooth_stepwise <- function(r0,r1,Tshift,alpha,t){
@@ -352,7 +352,7 @@ smooth_stepwise <- function(r0,r1,Tshift,alpha,t){
 
 \pagebreak
 
-A function to generate four figures for a given scenario. 
+A function to generate four figures for a given scenario. 'spe' and 'ext' are functions for speciation and extinction ratethrough time, and 'rho' is the sampling fraction. 'seq_time' is a vector of time intervals. 
 
 ```{r}
 plot_scenario <- function(spe,ext,rho,seq_time) {
@@ -371,9 +371,12 @@ par(mfrow=c(2,2))
 palette(alpha(brewer.pal(5, "Set1"), 0.75))
 
 # True rates
+
+#set y axis values based on rates
 #Ymin <- 0.9*min(spe(t), ext(t),div(t)) - 0.03
 #Ymax <- 1.1*max(spe(t), ext(t),div(t)) + 0.06
 
+#fixed y axis values
 Ymin <- -0.1
 Ymax <- 0.25
 
@@ -535,7 +538,7 @@ plot_scenario(spe = spe1,ext = ext1,rho = 1,seq_time = seq(0, tmax,0.1))
 
 ## Exponential growth or decline in speciation rate
 
-Here we demonstrate a special case where $\frac{1}{\lambda} \frac{d\lambda}{d\tau}$ is constant ($a$) so that $r_p = r + a$. Variations in $r_p$ match variations in $r$ but the absolute values are different. We present a couple of examples, first with a gradual exponential increase in speciation rate and a single  gradual change in extinction rate.
+Here we demonstrate a special case where $\frac{1}{\lambda} \frac{d\lambda}{d\tau}$ is constant ($= a$) so that $r_p = r + a$. Variations in $r_p$ match variations in $r$ but the absolute values are different. We present a couple of examples, first with a gradual exponential increase in speciation rate and a single  gradual change in extinction rate.
 
 ```{r}
 tmax <- 300
@@ -663,7 +666,7 @@ Sinusoidal functions are useful to assess the sensitivity of these results. Disc
 
 \pagebreak
 
-Here we introduce a slight difference in the amplitude, the degree to which rates vary, by increasing amplitude for speciation rate.
+Here we introduce a slight difference in the amplitude, the degree to which rates vary, by increasing amplitude for speciation rate. The top left panel shows parallel rates and amplitude is gradually increased in the other panels.
 
 ```{r, fig.height=5}
 spe<-list()
@@ -726,7 +729,7 @@ if(i == 1){
 
 \pagebreak
 
-Here we show the effect of a slight difference in the period, the rate at which rates vary, by making speciation rate vary faster than extinction rate.
+Here we show the effect of a slight difference in the period, the rate at which rates vary, by making speciation rate vary faster than extinction rate. The top left panel shows parallel rates and period is gradually increased in the other panels.
 
 ```{r, fig.height=5}
 tmax <- 300
@@ -810,7 +813,7 @@ if(i == 1){
 
 \pagebreak
 
-Finally we introduce a slight delay in the phase, the timing of the rate variation, by shifting the curve for speciation rate to the right.
+Finally we introduce a slight delay in the phase, the timing of the rate variation, by shifting the curve for speciation rate to the right. The top left panel shows parallel rates and phadse is gradually shifted in the other panels.
 
 ```{r, fig.height=5}
 tmax <- 300
