@@ -695,7 +695,7 @@ par(mar=c(4,2,1,1))
 
 for(i in 1:length(spe)){
 
-t <- -seq_time[-length(seq_time)]
+t <- seq_time[-length(seq_time)]
 pulled_rates <- pulled(birth = spe[[i]], death = ext[[i]],rho = 1,t = seq_time)
 PDR <- pulled_rates$PDR
 
@@ -703,13 +703,13 @@ div1 <- function(x) spe[[i]](x) - ext[[i]](x)
 
 Ymin <- 0.9*min(spe[[i]](t), ext[[i]](t), div1(t)) - 0.03
 Ymax <- 1.1*max(spe[[i]](t), ext[[i]](t), div1(t)) + 0.06
-plot(spe[[i]](t)~rev(-t),type="l",col=2,ylim=c(Ymin,Ymax),ylab = "", cex.lab = 0.75, cex.axis=0.75, xlab = bquote("Age (" * tau * ")"),
+plot(rev(spe[[i]](t))~rev(-t),type="l",col=2,ylim=c(Ymin,Ymax),ylab = "", cex.lab = 0.75, cex.axis=0.75, xlab = bquote("Age (" * tau * ")"),
   xaxt = "n"
 )
-axis(1, at = pretty(range(t)), labels = rev(pretty(range(-t))), cex.axis=0.75)
-lines(ext[[i]](t)~rev(-t),col=1)
-lines(div1(t)~rev(-t),col="black",lwd=2)
-lines(PDR~rev(-t),col="black",lty=2)
+axis(1, at = pretty(range(rev(-t))), labels = rev(pretty(range(rev(t)))), cex.axis=0.75)
+lines(rev(ext[[i]](t))~rev(-t),col=1)
+lines(rev(div1(t))~rev(-t),col="black",lwd=2)
+lines(rev(PDR)~rev(-t),col="black",lty=2)
 if(i == 1){
   legend(
   "topright",
@@ -758,7 +758,7 @@ par(mfrow = c(2, 2))
 par(mar = c(4, 2, 1, 1))
 
 for (i in 1:length(spe)) {
-  t <- -seq_time[-length(seq_time)]
+  t <- seq_time[-length(seq_time)]
   pulled_rates <-
     pulled(
       birth = spe[[i]],
@@ -773,26 +773,13 @@ for (i in 1:length(spe)) {
   
   Ymin <- 0.9 * min(spe[[i]](t), ext[[i]](t), div1(t)) - 0.03
   Ymax <- 1.1 * max(spe[[i]](t), ext[[i]](t), div1(t)) + 0.06
-  plot(
-    spe[[i]](t) ~ t,
-    type = "l",
-    col = 2,
-    ylim = c(Ymin, Ymax),
-    ylab = "",
-    cex.lab = 0.75,
-    cex.axis = 0.75,
-    xlab = bquote("Age (" * tau * ")"),
-    xaxt = "n"
-  )
-  axis(
-    1,
-    at = pretty(range(t)),
-    labels = rev(pretty(range(-t))),
-    cex.axis = 0.75
-  )
-  lines(ext[[i]](t) ~ t, col = 1)
-  lines(div1(t) ~ t, col = "black", lwd = 2)
-  lines(PDR ~ t, col = "black", lty = 2)
+  plot(rev(spe[[i]](t))~rev(-t),type="l",col=2,ylim=c(Ymin,Ymax),ylab = "", cex.lab = 0.75, cex.axis=0.75, xlab = bquote("Age (" * tau * ")"),
+  xaxt = "n"
+)
+axis(1, at = pretty(range(rev(-t))), labels = rev(pretty(range(rev(t)))), cex.axis=0.75)
+lines(rev(ext[[i]](t))~rev(-t),col=1)
+lines(rev(div1(t))~rev(-t),col="black",lwd=2)
+lines(rev(PDR)~rev(-t),col="black",lty=2)
 if(i == 1){
   legend(
   "topright",
@@ -842,7 +829,7 @@ par(mar=c(4,2,1,1))
 
 for(i in 1:length(spe)){
 
-t <- -seq_time[-length(seq_time)]
+t <- seq_time[-length(seq_time)]
 pulled_rates <- pulled(birth = spe[[i]], death = ext[[i]],rho = 1,t = seq_time)
 PDR <- pulled_rates$PDR
 
@@ -850,13 +837,13 @@ div1 <- function(x) spe[[i]](x) - ext[[i]](x)
 
 Ymin <- 0.9*min(spe[[i]](t), ext[[i]](t), div1(t)) - 0.03
 Ymax <- 1.1*max(spe[[i]](t), ext[[i]](t), div1(t)) + 0.06
-plot(spe[[i]](t)~rev(-t),type="l",col=2,ylim=c(Ymin,Ymax),ylab = "", cex.lab = 0.75, cex.axis=0.75, xlab = bquote("Age (" * tau * ")"),
+plot(rev(spe[[i]](t))~rev(-t),type="l",col=2,ylim=c(Ymin,Ymax),ylab = "", cex.lab = 0.75, cex.axis=0.75, xlab = bquote("Age (" * tau * ")"),
   xaxt = "n"
 )
-axis(1, at = pretty(range(t)), labels = rev(pretty(range(-t))), cex.axis=0.75)
-lines(ext[[i]](t)~rev(-t),col=1)
-lines(div1(t)~rev(-t),col="black",lwd=2)
-lines(PDR~rev(-t),col="black",lty=2)
+axis(1, at = pretty(range(rev(-t))), labels = rev(pretty(range(rev(t)))), cex.axis=0.75)
+lines(rev(ext[[i]](t))~rev(-t),col=1)
+lines(rev(div1(t))~rev(-t),col="black",lwd=2)
+lines(rev(PDR)~rev(-t),col="black",lty=2)
 
 if(i == 1){
   legend(
