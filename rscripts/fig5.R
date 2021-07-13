@@ -127,9 +127,9 @@ for (i in 1:4) {
   #diff(birth(t-1)) / (dt * birth(t-1)) # Relative derivative of the PSR
   PDR <- birth(T) - death(T) + rdlambda   # Pulled diversification rate
 
-  divers <- birth(t) - death(t)
+  divers <- birth(T) - death(T)
 
-  PER <- rep(birth(0),length(rdlambda)) - divers[-length(divers)] - rdlambda # Pulled extinction rate
+  PER <- rep(birth(0),length(rdlambda)) - divers - rdlambda # Pulled extinction rate
 
   PER <- birth(0) / (1 - E0) - PDR
   #plot
@@ -147,7 +147,7 @@ for (i in 1:4) {
   )
   axis(1, at=pretty(range(-rev(c(xmin[i],xmax[i])))), labels=rev(pretty(range(rev(c(xmin[i],xmax[i]))))))
   #div rate
-  lines(rev(divers) ~ rev(-t),col="black")
+  lines(rev(divers) ~ rev(-T),col="black")
   lines(rev(birth(T)) ~ rev(-T), col = 2)
   lines(rev(death(T)) ~ rev(-T), col = 1)
   lines(rev(PSR) ~ rev(-T), col = 2, lty = 2)

@@ -19,7 +19,7 @@ output:
 
 # Section 1: Simulations for figure 2
 
-Here we detail the simulations run to produce figure 2. Briefly, we simulated data and conducted a Bayesian Markov Chain Monte Carlo (MCMC) approach to estimate the values of two parameters, $a$ and $b$ when our knowledge is of the difference between these two parameters, or the slope. Though not using a birth-death model, this can be though of as a simplification of the process we go through when we try to estimate the speciation and extinction rate, when the data we have is related to their product - the net diversification rate.
+Here we detail the simulations run to produce figure 2. Briefly, we simulated data and conducted a Bayesian Markov Chain Monte Carlo (MCMC) approach to estimate the values of two parameters, $a$ and $b$ when our knowledge is of the difference between these two parameters, or the slope. Though not using a birth-death model, this can be thought of as a simplification of the process we go through when we try to estimate the speciation and extinction rate, when the data we have is related to their product - the net diversification rate.
 
 ```{r setup, include=FALSE}
 library(formatR)
@@ -80,8 +80,8 @@ likelihood <- function(a, b, datos) {
     like <- 0
     return(like) #fail
   } else{
-    like <-
-      prod(dgamma(datos, 2, rate = (a - b))) #product of all vectors of elements in gamma dist
+    #product of all vectors of elements in gamma dist
+    like <-prod(dgamma(datos, 2, rate = (a - b))) 
     return(like)
   }
 }
@@ -288,9 +288,9 @@ ggplot(contour_mat, aes(x = Var1, y = Var2, z = relative)) +
 
 # Section 2: Simulations for figures 3 and 4
 
-First we generated values of speciation and extinction rate over time. In Figure 3 we set speciation rate to be constant over time. For Figure 4 we used a slightly more complex a function in which speciation rate increased gradually over time, centred at 100 Ma, while extinction rate remained constant. With these known values of speciation and extinction rate we were able to calculated pulled speciation, diversification and extinction rates using the equations in Louca & Pennell, 2020.
+To construct figures 3 and 4 we first generated values of speciation and extinction rate over time. In Figure 3 we set speciation rate to be constant over time. For Figure 4 we used a slightly more complex a function in which speciation rate increased gradually over time, centered at 100 Ma, while extinction rate remained constant. With these known values of speciation and extinction rate we were able to calculated pulled speciation, diversification and extinction rates using the equations in Louca & Pennell, 2020.
 
-We then used our functions of speciation and extinction rates over time to simulate 50 trees under a birth death model using the function rbdtree() from the R package 'ape'. We generated Lineages-Through-Time (LTT) plots for the resulting trees (Figs. 3e, 4e) and calculated the slopes for each LTT using a loess function. We plotted the values of the slopes at each step (or event) in each LTT to show how the change in these slopes over time is captured by pulled speciation rate (Figs. 3f, 4f). 
+We then used our functions of speciation and extinction rates over time to simulate 50 trees under a birth death model using the function rbdtree() from the R package 'ape'. We generated Lineages-Through-Time (LTT) plots for the resulting trees (Figs. 3e, 4e) and calculated the slopes for each LTT using a loess function. We plotted the values of the slopes at each step (or event) in each LTT to show how the change in these slopes over time is captured by pulled speciation rate (Figs. 3f, 4f). The initial estimates of slope (Figs. 3f, 4f) can be higher than the diversification rate as we can only consider scenarios where early lineages survive. Likewise, the generally wide range of values around 300 Ma is due to a lack of speciation and extinction events leading to a poor estimation of rates early on. We note that the point estimates of slope in Figures 3f, 4f are calculated with a sliding window and this will introduce autocorrelation among estimates.
 
 The github repository https://github.com/ajhelmstetter/pulledRates contains the full code for reproducing figures [3](https://github.com/ajhelmstetter/pulledRates/blob/master/rscripts/fig3.R) and [4](https://github.com/ajhelmstetter/pulledRates/blob/master/rscripts/fig4.R). This research compendium was made with the help of [rcompendium](https://github.com/FRBCesab/rcompendium).
 
@@ -336,7 +336,7 @@ pulled <- function(birth,death,rho,t) {
   PSR <- PSRfull[-length(PSRfull)] 
   tt <- t[-length(t)]
   dt <- t[2]-t[1] # to get the time interval
-  PDR <- birth(t[-length(t)]) - death(t[-length(t)]) - diff(birth(t))/(dt*birth(t[-length(t)]))   # Pulled diversification rate
+  PDR <- birth(tt) - death(tt) + diff(birth(t))/(dt*birth(tt))   # Pulled diversification rate
   PER <- birth(0)/(1-E0) - PDR   # Pulled extinction rate
   return( list("PSR"=PSR,"PER"=PER,"PDR"=PDR) )
 }
@@ -352,7 +352,7 @@ smooth_stepwise <- function(r0,r1,Tshift,alpha,t){
 
 \pagebreak
 
-A function to generate four figures for a given scenario. 'spe' and 'ext' are functions for speciation and extinction ratethrough time, and 'rho' is the sampling fraction. 'seq_time' is a vector of time intervals. 
+A function to generate four figures for a given scenario. 'spe' and 'ext' are functions for speciation and extinction rate through time, and 'rho' is the sampling fraction. 'seq_time' is a vector of time intervals. 
 
 ```{r}
 plot_scenario <- function(spe,ext,rho,seq_time) {
@@ -363,7 +363,8 @@ PSR <- pulled_rates$PSR
 PER <- pulled_rates$PER
 PDR <- pulled_rates$PDR
 
-t <- -seq_time[-length(seq_time)]
+#remove last time value to match differences / pulled rates
+t <- seq_time[-length(seq_time)]
 
 #layout
 par(mar=c(4,2,1,1))
@@ -373,19 +374,19 @@ palette(alpha(brewer.pal(5, "Set1"), 0.75))
 # True rates
 
 #set y axis values based on rates
-#Ymin <- 0.9*min(spe(t), ext(t),div(t)) - 0.03
-#Ymax <- 1.1*max(spe(t), ext(t),div(t)) + 0.06
+#Ymin <- 0.9*min(rev(spe(t)), rev(ext(t)),rev(div(t))) - 0.03
+#Ymax <- 1.1*max(rev(spe(t)), rev(ext(t)),rev(div(t))) + 0.06
 
 #fixed y axis values
 Ymin <- -0.1
 Ymax <- 0.25
 
-plot(spe(-t)~t,type="l",col=2,ylim=c(Ymin,Ymax),ylab = "", cex.lab = 0.75, cex.axis=0.75, xlab = bquote("Age (" * tau * ")"),
-  xaxt = "n"
+plot(rev(spe(t))~rev(-t),type="l",col=2,ylim=c(Ymin,Ymax),ylab = "", cex.lab = 0.75, cex.axis=0.75, xlab = bquote("Age (" * tau * ")")
+  ,xaxt = "n"
 )
-axis(1, at = pretty(range(t)), labels = rev(pretty(range(-t))), cex.axis=0.75)
-lines(ext(-t)~t,col=1)
-lines(div(-t)~t,col="black")
+axis(1, at = pretty(range(rev(-t))), labels = rev(pretty(range(rev(t)))), cex.axis=0.75)
+lines(rev(ext(t))~rev(-t),col=1)
+lines(rev(div(t))~rev(-t),col="black")
 legend(
   "topright",
   legend = c("speciation rate",
@@ -399,13 +400,13 @@ legend(
 
 
 # True and pulled diversification rates
-#Ymin <- 0.9*min(div(t), PDR) - 0.03
-#Ymax <- 1.1*max(div(t), PDR) + 0.06
-plot(div(-t)~t,type="l",col="black",ylim=c(Ymin,Ymax),ylab = "",cex.lab = 0.75, cex.axis=0.75, xlab = bquote("Age (" * tau * ")"),
+#Ymin <- 0.9*min(rev(div(t)), PDR) - 0.03
+#Ymax <- 1.1*max(rev(div(t)), PDR) + 0.06
+plot(rev(div(t))~rev(-t),type="l",col="black",ylim=c(Ymin,Ymax),ylab = "",cex.lab = 0.75, cex.axis=0.75, xlab = bquote("Age (" * tau * ")"),
   xaxt = "n"
 )
-axis(1, at = pretty(range(t)), labels = rev(pretty(range(-t))), cex.axis=0.75)
-lines(PDR~t,col="black",lty=2)
+axis(1, at = pretty(range(rev(-t))), labels = rev(pretty(range(rev(t)))), cex.axis=0.75)
+lines(rev(PDR)~rev(-t),col="black",lty=2)
 legend(
   "topright",
   legend = c("diversification rate",
@@ -417,15 +418,15 @@ legend(
 )
 
 # True and pulled speciation and extinction rates
-#Ymin <- 0.9*min(spe(t), PSR,ext(t)) - 0.03
-#Ymax <- 1.1*max(spe(t), PSR,ext(t)) + 0.06
-plot(spe(-t)~t,type="l",col=2,ylim=c(Ymin,Ymax),ylab = "", cex.lab = 0.75, cex.axis=0.75, xlab = bquote("Age (" * tau * ")"),
+#Ymin <- 0.9*min(rev(spe(t)), PSR,rev(ext(t))) - 0.03
+#Ymax <- 1.1*max(rev(spe(t)), PSR,rev(ext(t))) + 0.06
+plot(rev(spe(t))~rev(-t),type="l",col=2,ylim=c(Ymin,Ymax),ylab = "", cex.lab = 0.75, cex.axis=0.75, xlab = bquote("Age (" * tau * ")"),
   xaxt = "n"
 )
-axis(1, at = pretty(range(t)), labels = rev(pretty(range(-t))),cex.axis=0.75)
-lines(PSR~t,col=2,lty=2)
-lines(ext(-t)~t,type="l",col=1)
-lines(PER~t,col=1,lty=2)
+axis(1, at = pretty(range(rev(-t))), labels = rev(pretty(range(rev(t)))), cex.axis=0.75)
+lines(rev(PSR)~rev(-t),col=2,lty=2)
+lines(rev(ext(t))~rev(-t),type="l",col=1)
+lines(rev(PER)~rev(-t),col=1,lty=2)
 legend(
   "topright",
   legend = c("speciation rate",
@@ -441,11 +442,11 @@ legend(
 # Pulled  rates
 #Ymin <- 0.9*min(PSR, PDR) - 0.03
 #Ymax <- 1.1*max(PSR, PDR) + 0.06
-plot(PDR~t,type="l",lty=2,col="black",ylim=c(Ymin,Ymax),ylab = "", cex.lab = 0.75, cex.axis=0.75, xlab = bquote("Age (" * tau * ")"),
+plot(rev(PDR)~rev(-t),type="l",lty=2,col="black",ylim=c(Ymin,Ymax),ylab = "", cex.lab = 0.75, cex.axis=0.75, xlab = bquote("Age (" * tau * ")"),
   xaxt = "n"
 )
-axis(1, at = pretty(range(t)), labels = rev(pretty(range(-t))),cex.axis=0.75)
-lines(PSR~t,col=2,lty=2)
+axis(1, at = pretty(range(rev(-t))), labels = rev(pretty(range(rev(t)))), cex.axis=0.75)
+lines(rev(PSR)~rev(-t),col=2,lty=2)
 legend(
   "topright",
   legend = c("pulled speciation rate",
@@ -463,9 +464,9 @@ legend(
 
 ## $r_p$ is a generally a good approximation of $r$
 
-For simplicity, the sampling fraction is assumed to be 1 to focus on the effect of varying extinction and speciation rates, which is what we are interested in from a biological point of view. The effect of the sampling fraction can easily be explored by passing rho value to the pulled() function.
-
 The exploration of the following scenarios demonstrates that even when $\lambda_p$ and $\mu_p$ are very different from $\lambda$ and $\mu$ (as shown in LP), in most cases, $r$ and $r_p$ are close. In the main text, we suggested that when $r_p$ and $\lambda_p$ are quite close (except for recent times), it is a good diagnostic of the fact that $\lambda$ does not change too rapidly so that $r_p$ is a good proxy for $r$. The following exploration shows that this guideline is conservative as even when $r_p$ and $\lambda_p$ substantially differ, $r_p$ can still be close to $r$.
+
+For simplicity, the sampling fraction is assumed to be 1 to focus on the effect of varying extinction and speciation rates, which is what we are interested in from a biological point of view. The effect of the sampling fraction can easily be explored by passing rho value to the pulled() function.
 
 Here we give several examples to illustrate different possible scenarios. Using this script, any function for the speciation and extinction rate can be given to play with.
 
@@ -702,13 +703,13 @@ div1 <- function(x) spe[[i]](x) - ext[[i]](x)
 
 Ymin <- 0.9*min(spe[[i]](t), ext[[i]](t), div1(t)) - 0.03
 Ymax <- 1.1*max(spe[[i]](t), ext[[i]](t), div1(t)) + 0.06
-plot(spe[[i]](t)~t,type="l",col=2,ylim=c(Ymin,Ymax),ylab = "", cex.lab = 0.75, cex.axis=0.75, xlab = bquote("Age (" * tau * ")"),
+plot(spe[[i]](t)~rev(-t),type="l",col=2,ylim=c(Ymin,Ymax),ylab = "", cex.lab = 0.75, cex.axis=0.75, xlab = bquote("Age (" * tau * ")"),
   xaxt = "n"
 )
 axis(1, at = pretty(range(t)), labels = rev(pretty(range(-t))), cex.axis=0.75)
-lines(ext[[i]](t)~t,col=1)
-lines(div1(t)~t,col="black",lwd=2)
-lines(PDR~t,col="black",lty=2)
+lines(ext[[i]](t)~rev(-t),col=1)
+lines(div1(t)~rev(-t),col="black",lwd=2)
+lines(PDR~rev(-t),col="black",lty=2)
 if(i == 1){
   legend(
   "topright",
@@ -849,13 +850,13 @@ div1 <- function(x) spe[[i]](x) - ext[[i]](x)
 
 Ymin <- 0.9*min(spe[[i]](t), ext[[i]](t), div1(t)) - 0.03
 Ymax <- 1.1*max(spe[[i]](t), ext[[i]](t), div1(t)) + 0.06
-plot(spe[[i]](t)~t,type="l",col=2,ylim=c(Ymin,Ymax),ylab = "", cex.lab = 0.75, cex.axis=0.75, xlab = bquote("Age (" * tau * ")"),
+plot(spe[[i]](t)~rev(-t),type="l",col=2,ylim=c(Ymin,Ymax),ylab = "", cex.lab = 0.75, cex.axis=0.75, xlab = bquote("Age (" * tau * ")"),
   xaxt = "n"
 )
 axis(1, at = pretty(range(t)), labels = rev(pretty(range(-t))), cex.axis=0.75)
-lines(ext[[i]](t)~t,col=1)
-lines(div1(t)~t,col="black",lwd=2)
-lines(PDR~t,col="black",lty=2)
+lines(ext[[i]](t)~rev(-t),col=1)
+lines(div1(t)~rev(-t),col="black",lwd=2)
+lines(PDR~rev(-t),col="black",lty=2)
 
 if(i == 1){
   legend(
