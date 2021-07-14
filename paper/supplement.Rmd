@@ -119,16 +119,21 @@ for (i in 1:generations) {
   #calculate ratio of likelihoods of new values / old values
   like_odds <-
     likelihood(a_prime, b_prime, simulated_data) / likelihood(a, b, simulated_data)
-
+  
   #calculate ratio of prior of new values / old values
   prior_odds <- prior(a_prime, b_prime) / prior(a, b)
-
+  
   #calculate posterior odds
   R <- like_odds * prior_odds
 
   #randomly draw from uniform distribution
   u <- runif(1)
 
+  #set to 0 if prior_odds is NaN
+  if(is.nan(prior_odds)){
+    R<-0
+  }
+  
   #if posterior odds are greater than a random value, keep new values of parameter
   if (u < R) {
     a = a_prime
@@ -150,23 +155,25 @@ for (i in 1:generations) {
 #format output data
 output <- data.frame(output)
 names(output) <-
-  c("iteration", "prior", "likelihood", "posterior", "lambda", "mu")
+  c("iteration", "prior", "likelihood", "posterior", "a", "b")
 
 ```
+
+\pagebreak
 
 We can then plot the results of our chain. Here we plot the values of $a$ and $b$ over time, showing how they vary dramatically and are highly correlated. However, when we plot $a-b$ we find that we are much better at approximating the value of the difference between these parameters. Even when $a$ and $b$ vary wildly our estimates of $a-b$ remain stable.
 
 ```{r plot1, echo=FALSE, warning=FALSE}
-par(mar = c(4, 4, 2, 2))
+par(mar = c(5, 5, 2, 2))
 #plot values of parameters in chain
 par(mfrow = c(3, 1))
 plot(
-  output$lambda ~ output$iteration,
+  output$a ~ output$iteration,
   type = 'l',
   col = 4,
   ylim = c(0, 1.5),
   xlab = "Generation",
-  ylab = "lambda",
+  ylab = "a",
   bty = 'l'
 )
 abline(h = a_true, lty = 2)
@@ -179,12 +186,12 @@ mtext(
 )
 
 plot(
-  output$mu ~ output$iteration,
+  output$b ~ output$iteration,
   type = 'l',
   col = 2,
   ylim = c(0, 1.5),
   xlab = "Generation",
-  ylab = "mu",
+  ylab = "b",
   bty = 'l'
 )
 abline(h = b_true, lty = 2)
@@ -196,12 +203,12 @@ mtext(
   cex = 0.8
 )
 
-plot((output$lambda - output$mu) ~ output$iteration,
+plot((output$a - output$b) ~ output$iteration,
      type = 'l',
      col = 3,
      ylim = c(0, 1.5),
      xlab = "Generation",
-     ylab = "lambda - mu",
+     ylab = "a - b",
      bty = 'l'
 )
 abline(h = a_true - b_true, lty = 2)
@@ -213,6 +220,8 @@ mtext(
   cex = 0.8
 )
 ```
+
+\pagebreak
 
 Finally, we plot the relative likelihoods across a range of values we are interested in for $a$ and $b$. We do this by finding the pair of values for $a$ and $b$ that produce the maximum likelihood, and then divide the likelihood of all other combinations of $a$ and $b$ by the maximum likelihood. This produces a likelihood surface that clearly shows the high correlation between $a$ and $b$, but also that different pairs of values can be equally likely. The true values of $a$ and $b$ are shown as the orange dot. Even though this falls within a region of high likelihood as estimated by our model, it provides no reliable estimate of the absolute values of $a$ and $b$ due to unidentifiability.
 
@@ -336,7 +345,8 @@ pulled <- function(birth,death,rho,t) {
   PSR <- PSRfull[-length(PSRfull)] 
   tt <- t[-length(t)]
   dt <- t[2]-t[1] # to get the time interval
-  PDR <- birth(tt) - death(tt) + diff(birth(t))/(dt*birth(tt))   # Pulled diversification rate
+  # Pulled diversification rate
+  PDR <- birth(tt) - death(tt) + diff(birth(t))/(dt*birth(tt))
   PER <- birth(0)/(1-E0) - PDR   # Pulled extinction rate
   return( list("PSR"=PSR,"PER"=PER,"PDR"=PDR) )
 }
