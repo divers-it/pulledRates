@@ -575,7 +575,7 @@ plot_scenario(spe = spe1,ext = ext1,rho = 1,seq_time = seq(0, tmax,0.1))
 
 ## Contrasted scenarios for speciation and extinction leading to a similar scenario for diversification
 
-In their article, LP give an example with flowering plants, fitting two congruent models in which patterns of speciation and extinction variation strongly differ - both rates are either increasing or decreasing through time. However, the resulting pattern in diversification can be quite similar between the two scenarios, which we highlight here with two examples with contrasting scenarios. First, a scenario where both speciation and extinction rates are increasing.
+In their article, LP give an example with seed plants, fitting two congruent models in which patterns of speciation and extinction variation strongly differ - both rates are either increasing or decreasing through time. However, the resulting pattern in diversification can be quite similar between the two scenarios, which we highlight here with two examples with contrasting scenarios. First, a scenario where both speciation and extinction rates are decreasing.
 
 ```{r}
 tmax <- 300
@@ -587,7 +587,7 @@ plot_scenario(spe = spe1,ext = ext1,rho = 1,seq_time = seq(0, tmax,0.1))
 
 \pagebreak
 
-Second, a scenario in which both speciation and extinction rate decreasing. Note how diversification rate remains similar between the two scenarios.
+Second, a scenario in which both speciation and extinction rate are increasing. Note how diversification rate remains similar between the two scenarios.
 
 ```{r}
 tmax <- 300
@@ -673,7 +673,7 @@ plot_scenario(spe = spe1,ext = ext1,rho = 1,seq_time = seq(0, tmax,0.1))
 
 ## How sensitive is $r_p$ to variations in $\lambda$ and $\mu$?
 
-Sinusoidal functions are useful to assess the sensitivity of these results. Discrepancies are stronger when $r$ is constant, so how variable does $r$ have to be for $r_p$ to be a good approximation of $r$? The following graphs explore how slight differences in the amplitude, period and phase of the variations in speciation and extinction rate alter the results presented above, where variations are parallel. If a slight change is introduced then $r_p$ and $r$ become almost immediately similar. Variation in the period is particularly effective. Quantitative differences still persist when amplitude and phase are changed, but the qualitative behavior becomes more similar i.e. the shape of the curves is similar, even if they are delayed for $r_p$.
+Sinusoidal functions are useful to assess the sensitivity of these results. Discrepancies are stronger when $r$ is constant, so how variable does $r$ have to be for $r_p$ to be a good approximation of $r$? The following graphs explore how slight differences in the amplitude, period and phase of the variations in speciation and extinction rate alter the results presented above, where variations are parallel. If a slight change is introduced then $r_p$ and $r$ become almost immediately similar. Variation in the period is particularly effective. Quantitative differences still persist when amplitude and phase are changed, but the qualitative behavior becomes more similar i.e. the shapes of the curves are similar, even if they are delayed for $r_p$.
 
 \pagebreak
 
