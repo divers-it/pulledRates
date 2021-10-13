@@ -5,13 +5,13 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-Research Compendium of the project **{{ PLEASE ADD A FEW WORDS }}**
+Research Compendium of the project **pulledRates**
 
 ### How to cite
 
-Please cite this compendium as:
+Please cite this compendium using:
 
-> **{{ PLEASE ADD A CITATION }}**
+> Helmstetter, A. J., Glemin, S., Kafer, J., Zenil-Ferguson, R., Sauquet, H., de Boer, H., ... & Condamine, F. L. (2021). Pulled diversification rates, lineage-through-time plots and modern macroevolutionary modeling. Systematic Biology.
 
 ### Content
 
@@ -45,12 +45,6 @@ This repository is structured as follow:
 -   [`make.R`](https://github.com/ajhelmstetter/pulledRates/tree/master/make.R):
     master R script to run the entire project by calling each R script
     stored in the `rscripts/` folder
-
-### Usage
-
-Clone the repository, open the `.Rproj` file in RStudio and run:
-
-    source("make.R")
 
 ### Notes
 
